@@ -1,39 +1,38 @@
-// Entry point for The Great Turkey Getaway (make.fun turkey-run-game-01).
-// One job: hand the game in. It copies game/ and screenshots/ from this
-// repository into the output directory and writes dossier.json there,
-// built from those same files with the kit's dossier library.
-// Node 22 standard library only; nothing is installed or fetched.
-
-import { cpSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+// The Great Turkey Escape — entrypoint.
+//
+// Copies game/ and screenshots/ from this repository into the output
+// directory and writes /output/dossier.json with the kit's buildDossier,
+// exactly as the competition's scorer rebuilds it. Runs on Node 22 with
+// no install and no network. Both grader runs must write the same bytes,
+// so every step below is deterministic: fixed copy order, no timestamps.
+//
+// The output directory is only ever created, never deleted: the grader
+// mounts it and runs this program as an unprivileged user, so removing
+// it fails with permission denied and fails the whole grade.
+import { cpSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildDossier } from "./vendor/makefun-game.ts";
 
-const DOSSIER_TEXT_MAX_BYTES = 163840;
-const SCREENSHOTS_MAX = 4;
-const SCREENSHOT_MAX_BYTES = 262144;
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)));
+const outDir = resolve(process.env.MAKEFUN_OUTPUT_DIR ?? "/output");
 
-async function main() {
-  const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)));
-  const outputDir = resolve(process.env.MAKEFUN_OUTPUT_DIR || "/output");
-
-  const gameDir = join(repoRoot, "game");
-  const shotsDir = join(repoRoot, "screenshots");
-  if (!existsSync(gameDir)) throw new Error("game/ is missing from the repository");
-  if (!existsSync(shotsDir)) throw new Error("screenshots/ is missing from the repository");
-
-  mkdirSync(outputDir, { recursive: true });
-  cpSync(gameDir, join(outputDir, "game"), { recursive: true });
-  cpSync(shotsDir, join(outputDir, "screenshots"), { recursive: true });
-
-  const dossier = await buildDossier(repoRoot, {
-    text_max_bytes: DOSSIER_TEXT_MAX_BYTES,
-    screenshots: { max: SCREENSHOTS_MAX, max_bytes: SCREENSHOT_MAX_BYTES },
-  });
-  writeFileSync(join(outputDir, "dossier.json"), Buffer.from(dossier));
+function copyTree(src: string, dest: string): void {
+  // mkdir first: the destination may already exist from a previous
+  // run in the same output directory, and that is fine.
+  mkdirSync(dest, { recursive: true });
+  cpSync(src, dest, { recursive: true });
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
+mkdirSync(outDir, { recursive: true });
+copyTree(join(repoRoot, "game"), join(outDir, "game"));
+copyTree(join(repoRoot, "screenshots"), join(outDir, "screenshots"));
+
+const dossier = buildDossier(outDir, {
+  text_max_bytes: 163840,
+  screenshots: { max: 4, max_bytes: 262144 },
+  game_max_files: 993,
+  game_max_bytes: 50331648,
+  game_path_max_bytes: 1000,
 });
+writeFileSync(join(outDir, "dossier.json"), dossier);

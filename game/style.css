@@ -1,0 +1,34 @@
+/* The Great Turkey Escape — page chrome around the canvas. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #241608;
+  min-height: 100vh;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+canvas {
+  display: block;
+  width: min(1280px, 96vw);
+  height: auto;
+  background: #f7b733;
+  border-radius: 10px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+}
+
+.hint {
+  margin: 12px 0 0;
+  color: #e8cfa0;
+  font: 16px Trebuchet MS, Verdana, sans-serif;
+  text-align: center;
+}

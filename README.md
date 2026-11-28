@@ -1,56 +1,45 @@
-# The Great Turkey Getaway
+# The Great Turkey Escape
 
 [![turkey-run-game-01](https://make.fun/badge/turkey-run-game-01.svg)](https://make.fun/bounty/turkey-run-game-01)
 [![rank](https://make.fun/badge/turkey-run-game-01/muhamadfajar160299-ctrl/makefun-entry-turkey-escape-20261127/rank.svg)](https://make.fun/bounty/turkey-run-game-01)
 [![reward](https://make.fun/badge/turkey-run-game-01/muhamadfajar160299-ctrl/makefun-entry-turkey-escape-20261127/reward.svg)](https://make.fun/bounty/turkey-run-game-01)
 
-A complete, original turkey escape game for make.fun's
-[turkey-run-game-01](https://make.fun/bounty/turkey-run-game-01) bounty.
-Thanksgiving is coming and the farmer is coming faster: run Tom the turkey
-from the farmyard, through the barn, across the kitchen — jump the fences,
-duck the flying carving knives, mind the hot oven — and reach the forest
-gate at 1400 m to escape becoming dinner.
+A 2D canvas turkey escape game for the make.fun competition
+[turkey-run-game-01](https://make.fun/bounty/turkey-run-game-01) — "Make the
+best turkey escape game".
+
+Thanksgiving is coming. The farmer is coming faster. Run, jump, duck — and
+do NOT become dinner.
 
 ## How to play
 
-- **Jump:** `Space`, `W`, `↑`, or click / tap
-- **Duck & hide:** hold `↓` or `S` — duck inside a haystack and the farmer loses your trail
-- **Pause:** `P` — **Mute:** `M` — **Restart:** `R` or click on the end screen
-- Grab corn for points. Each stumble lets the farmer close in; three hits
-  (or the farmer catching up) ends the run. Clear all three stages to escape.
+Serve `game/` with any static HTTP server and open `game/index.html` in a
+desktop browser. No network, no build step.
 
-## Play it
+- **Jump:** SPACE / W / ↑ / click
+- **Duck & hide:** ↓ / S — duck inside a haystack to lose the farmer
+- **Pause:** P — **Mute:** M — **Restart:** R
 
-Serve `game/` with any static server and open `game/index.html` in desktop
-Chrome. No network requests, no build step, no assets to download — all art
-is drawn on canvas and all sound is synthesized with WebAudio.
+Grab corn for points, dodge fences, hay bales, pumpkins, rolling pins and
+pots, duck under the big carving knife, jump the oven's heat waves, and
+reach the forest gate at 1200 m to escape. The farmyard gives way to the
+kitchen at 700 m, where the farmer closes in faster and the dangers come
+thicker.
 
-```sh
-python3 -m http.server 8080 --directory game
-# open http://localhost:8080/
-```
+## What's in here
 
-## Layout
-
-- `main.ts` — the entry program (Node 22, stdlib only): copies `game/` and
-  `screenshots/` to the output directory and writes `dossier.json`.
-- `game/index.html` — the page that loads the game.
-- `game/src/config.js` — tuning numbers and stage definitions.
-- `game/src/audio.js` — synthesized sound effects (WebAudio, no files).
-- `game/src/input.js` — keyboard and mouse input.
-- `game/src/world.js` — obstacles, corn, haystacks, spawning, collisions.
-- `game/src/farmer.js` — the chasing farmer and his search behaviour.
-- `game/src/turkey.js` — the player: jumps, ducks, hurt state.
-- `game/src/render.js` — every screen, drawn on canvas.
-- `game/src/main.js` — state machine, loop, scoring, screenshot scenes.
+- `game/` — the game itself: `index.html` plus one clear job per file
+  under `js/` (tuning, audio, input, the turkey, the farmer, the world,
+  rendering, the game loop, bootstrap).
+- `screenshots/` — four real renders of the game in a browser.
+- `main.ts` — the hand-in program: copies `game/` and `screenshots/`
+  into the output directory and writes `dossier.json`.
 - `vendor/makefun-game.ts` — the kit's dossier library, unchanged.
-- `screenshots/` — real renders of the game's own code.
 
-## Hand in
-
-```sh
-mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
-```
+Built as a revision of "The Great Turkey Getaway": the playfield is full
+of farm and kitchen detail, the turkey and the farmer never merge into
+one blob, the knife is big and arcing, the oven glows with flames, and
+the haystack hide is shown in play.
 
 ## License
 
